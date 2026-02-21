@@ -16,19 +16,21 @@ def astar(grid, start, goal):
             while current in came_from:
                 path.append(current)
                 current = came_from[current]
+            path.append(start)
             return path[::-1]
 
         for dx, dy in [(1,0),(-1,0),(0,1),(0,-1)]:
             neighbor = (current[0]+dx, current[1]+dy)
 
             if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols:
-                if grid[neighbor] == 1:
+                if grid[neighbor] != 0:  # avoid obstacle + heat
                     continue
 
                 temp_g = g_score[current] + 1
+
                 if neighbor not in g_score or temp_g < g_score[neighbor]:
                     g_score[neighbor] = temp_g
-                    priority = temp_g
+                    priority = temp_g + abs(goal[0]-neighbor[0]) + abs(goal[1]-neighbor[1])
                     heapq.heappush(open_set, (priority, neighbor))
                     came_from[neighbor] = current
 
